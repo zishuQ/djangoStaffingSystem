@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
+    <style>
+        .account {
+            width: 400px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            padding: 20px 40px;
+        }
+
+        .account h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="account">
+    <h2>用户登录</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {% if field.label == "验证码" %}
+                    <label for="id_code">图片验证码</label>
+                    <div class="row">
+                        <div class="col-xs-7">
+                            <input type="text" name="code" class="form-control" placeholder="请输入图片验证码"
+                                   required="" id="id_code">
+                            <span style="color: red;"></span>
+                        </div>
+                        <div class="col-xs-5">
+                            <img id="image_code" src="/image/code/" style="width: 125px" alt="">
+                        </div>
+                    </div>
+                {% else %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                {% endif %}
+                <span style="color: red;">{{ field.errors.0 }}</span>
+            </div>
+        {% endfor %}
+        <div class="form-group">
+
+        </div>
+
+        <input type="submit" value="登录" class="btn btn-primary">
+    </form>
+</div>
+</body>
+</html>
