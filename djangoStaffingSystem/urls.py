@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app01.views import depart, user, pretty, admin, account, task, order
+from app01.views import depart, user, pretty, admin, account, task, order, chart, upload
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -26,11 +26,11 @@ urlpatterns = [
     path('depart/add/', depart.depart_add),
     path('depart/delete/', depart.depart_delete),
     path('depart/<int:nid>/edit/', depart.depart_edit),  # django 3的新特性，之前是要用正则表达式的
+    path('depart/multi/', depart.depart_multi),
 
     # 用户管理
     path('user/list/', user.user_list),
     path('user/add/', user.user_add),
-
     path('user/model/form/add/', user.user_model_form_add),
     path('user/<int:nid>/edit/', user.user_edit),
     path('user/<int:nid>/delete/', user.user_delete),
@@ -61,4 +61,16 @@ urlpatterns = [
     # 订单管理
     path('order/list/', order.order_list),
     path('order/add/', order.order_add),
+    path('order/delete/', order.order_delete),
+    path('order/detail/', order.order_detail),
+    path('order/edit/', order.order_edit),
+
+    # 数据统计
+    path('chart/list/', chart.chart_list),
+    path('chart/bar/', chart.chart_bar),
+    path('chart/pie/', chart.chart_pie),
+    path('chart/line/', chart.chart_line),
+
+    # 上传文件
+    path('upload/list/', upload.upload_list),
 ]

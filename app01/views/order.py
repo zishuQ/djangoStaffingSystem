@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 
+import requests
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -40,4 +41,43 @@ def order_add(request):
         form.save()
         # return HttpResponse(json.dumps({"status": True})
         return JsonResponse({"status": True})
+    return JsonResponse({"status": False, "error": form.errors})
+
+
+def order_delete(request):
+    """ 删除订单 """
+    uid = request.GET.get('uid')
+    print(uid)
+    exists = models.Order.objects.filter(id=uid).exists()
+    if not exists:
+        return JsonResponse({"status": False, "error": "删除失败：数据不存在"})
+
+    models.Order.objects.filter(id=uid).delete()
+    return JsonResponse({"status": True})
+
+
+def order_detail(request):
+    """ 根据ID获取订单详细 """
+    uid = request.GET.get('uid')
+    # 从数据库中获取到一个字典 row_dict
+    row_dict = models.Order.objects.filter(id=uid).values("title", "price", "status").first()
+    if not row_dict:
+        return JsonResponse({"status": False, "error": "数据不存在"})
+
+    return JsonResponse({"status": True, "data": row_dict})
+
+
+@csrf_exempt
+def order_edit(request):
+    """ 编辑订单 """
+    uid = request.GET.get("uid")
+    row_object = models.Order.objects.filter(id=uid).first()
+    if not row_object:
+        return JsonResponse({"status": False, "tip": "数据不存在，请刷新重试"})
+
+    form = OrderModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({"status": True})
+
     return JsonResponse({"status": False, "error": form.errors})
