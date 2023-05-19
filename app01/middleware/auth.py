@@ -15,6 +15,9 @@ class AuthMiddleware:
         # 1.读取当前访问的用户的session信息，如果能读到，说明已登录过，就可以继续向后走
         info_dict = request.session.get("info")
         if info_dict:
+            # 如果是已经登录过的用户，访问网址就跳转到/admin/list/页面
+            if request.path_info == '/':
+                return redirect('/admin/list/')
             return self.get_response(request)
 
         # 2.没有登录过，重新回到登录页面

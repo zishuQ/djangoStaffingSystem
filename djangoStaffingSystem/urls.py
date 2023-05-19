@@ -15,22 +15,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from app01.views import depart, user, pretty, admin, account, task, order
+from django.urls import path, re_path
+from django.views.static import serve
+from django.conf import settings
+
+from app01.views import depart, user, pretty, admin, account, task, order, chart, upload, city
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 
     # 部门管理
     path('depart/list/', depart.depart_list),
     path('depart/add/', depart.depart_add),
     path('depart/delete/', depart.depart_delete),
     path('depart/<int:nid>/edit/', depart.depart_edit),  # django 3的新特性，之前是要用正则表达式的
+    path('depart/multi/', depart.depart_multi),
 
     # 用户管理
     path('user/list/', user.user_list),
     path('user/add/', user.user_add),
-
     path('user/model/form/add/', user.user_model_form_add),
     path('user/<int:nid>/edit/', user.user_edit),
     path('user/<int:nid>/delete/', user.user_delete),
@@ -61,4 +65,22 @@ urlpatterns = [
     # 订单管理
     path('order/list/', order.order_list),
     path('order/add/', order.order_add),
+    path('order/delete/', order.order_delete),
+    path('order/detail/', order.order_detail),
+    path('order/edit/', order.order_edit),
+
+    # 数据统计
+    path('chart/list/', chart.chart_list),
+    path('chart/bar/', chart.chart_bar),
+    path('chart/pie/', chart.chart_pie),
+    path('chart/line/', chart.chart_line),
+
+    # 上传文件
+    path('upload/list/', upload.upload_list),
+    path('upload/form/', upload.upload_form),
+    path('upload/modelform/', upload.upload_modelform),
+
+    # 城市列表
+    path('city/list/', city.city_list),
+    path('city/add/', city.city_add),
 ]

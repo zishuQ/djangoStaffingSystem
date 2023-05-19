@@ -1,3 +1,4 @@
+from openpyxl import load_workbook
 from django.shortcuts import render, redirect
 
 from app01 import models
@@ -62,3 +63,23 @@ def depart_edit(request, nid):
 
     # 重定向回部门列表
     return redirect("/depart/list/")
+
+
+def depart_multi(request):
+    """ 批量上传（Excel文件） """
+
+    # 1. 获取用户上传的文件对象
+    file_object = request.FILES.get("exc")
+
+    # 2. 对象传递给openpyxl，由openpyxl读取文件的内容
+    wb = load_workbook(file_object)
+    sheet = wb.worksheets[0]
+
+    # 3. 循环换取每一行数据
+    for row in sheet.iter_rows(min_row=2):
+        text = row[0].value
+        exists = models.Department.objects.filter(title=text).exists()
+        if not exists:
+            models.Department.objects.create(title=text)
+
+    return redirect('/depart/list/')
