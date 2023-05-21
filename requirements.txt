@@ -1,0 +1,6 @@
+mysqlclient
+pillow
+openpyxl
+requests
+django
+uwsgi
